@@ -1,0 +1,378 @@
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <?php
+session_start();
+// if ($_SESSION['username']=="esme admin")  // auth
+             {    // auth
+//---------------- option ------------------
+$show_php_codes="yes"; // cjphange to no if you dont like
+$filename="iran_file_manager.php";// ham esme file bayad bashad
+ //------------------------------------------
+ // variables of program:
+
+?>
+
+<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="rtl">
+<head>
+<title>Iran file manger</title>
+
+<style>
+<?php
+include"iran_manager/my_css.php";
+?>                                                     
+</style>
+</head>
+<body>
+       <?php
+  
+     ?>
+ <div id='page'>
+
+<?php
+echo"<div id='header_print'>"; 
+  echo"<h3><a href='index.php'>website</a></h3>"; // link be site
+echo"</div>";  
+//echo"<br>--------------II------------------<br>";
+        $my_loci=$_SERVER['SERVER_NAME'];
+     // echo"<br>server name= ".$my_loci;
+//echo"<br>--------------IIOO-----------------<br>";
+
+
+$my_dir="./";
+include"iran_manager/engine1.php";
+
+
+ if(isset($_POST['action']))  
+ {// if action
+include"iran_manager/save_action.php";
+ }  // action
+if(isset($_POST['action_upload']))  
+{
+$masir=$_POST['masir'];
+echo $masir;
+  //  $target_dir = "top_images/".$masir."/";
+//echo "t dir= ".$target_dir;  
+$target_dir=$masir."/";
+$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+//-----------------@@@@@@@@@@@@@@
+$uploadOk = 1;
+
+// Check if file already exists
+ if (file_exists($target_file)) {
+echo "<h2 style='color:red'>Sorry, file already exists.</h2>";
+         $uploadOk = 0;
+      }
+// Check file size
+ if ($_FILES["fileToUpload"]["size"] > 30000000) {
+echo "<h1 style='color:red'>Sorry, your file is too large.</h1>";
+$uploadOk = 0;
+     }
+
+
+
+     // Check if $uploadOk is set to 0 by an error
+     if ($uploadOk == 0) {
+         echo "<h1 style='color:blue'>Sorry, your file was not uploaded.</h1>";
+    // if everything is ok, try to upload file
+           } else {
+    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+        echo "<br><br><br><center><h1>The file:</h1></center>";
+        echo "<center> <h1 style='color:Red;'>". basename( $_FILES["fileToUpload"]["name"]). "</h1></center>";
+        echo "<center><h1>has been uploaded</h1></center>";
+
+    } else {
+        echo "<br><center><h1>Sorry, there was an error uploading your file.</h1></center>";
+    }
+           }
+//----------------@@@@@@@@@@@@@@@
+//include"iran_manager/upload.php";
+}  //  upload
+
+
+if(isset($_POST['action_rename']))  
+ {// if action_rename
+
+$masir=$_POST['masir'];
+$dir=$_POST['dir'];
+$my_filename=$_POST['filename'];
+$yes_or_no=$_POST['yes_or_no_1'];
+$new_file_name=$_POST['new_file_name'];
+
+if ($yes_or_no=="yes")
+{
+$jam3=$dir."/".$my_filename;
+echo"<br>";
+echo "jam3= ".$jam3;
+$jam4=$dir."/".$new_file_name;
+echo"<br>";
+echo "jam4= ".$jam4;
+
+rename("$jam3","$jam4");
+ }  // Yes or no
+//include"iran_manager/rename_action.php";
+ }  // action
+
+if(isset($_POST['action_delete']))  
+ {// if action_rename
+
+$masir=$_POST['masir'];
+$dir=$_POST['dir'];
+$my_filename=$_POST['filename'];
+$yes_or_no=$_POST['yes_or_no_2'];
+
+if ($yes_or_no=="yes")
+{
+    echo"delete yes";
+$jam3=$dir."/".$my_filename;
+echo"<br>";
+echo "jam3= ".$jam3;
+
+unlink($jam3); 
+
+ }  // Yes or no
+//include"iran_manager/rename_action.php";
+ }  // action
+
+$scan = scandir($my_dir);
+
+// khate badi sahih , print_r , chaap hameye etel!aat
+//print_r($scan);
+echo"<div id='root_print'>"; 
+ echo "<a href='$filename?folder=empty'><img src='http://saalek110.is-great.net/images/buttons/root.png' width='180' height='auto'></a>";
+
+echo"</div>";  
+
+echo"<table border=1>"; echo"<tr>";
+
+
+echo"<td>";
+$my_folder="Root";
+echo"<div id='forum_name'>";  
+if ($_SESSION['step1'] !="empty" )
+{
+$my_folder=$_SESSION['step1'];
+
+if ($_SESSION['step2'] !="empty" )
+$my_folder=$my_folder."/".$_SESSION['step2'];
+if ($_SESSION['step3'] !="empty" )
+$my_folder=$my_folder."/".$_SESSION['step3'];
+if ($_SESSION['step4'] !="empty" )
+$my_folder=$my_folder."/".$_SESSION['step4'];
+}
+echo $my_folder;
+echo"</div>";  
+echo"<div id='folders_list'>";  
+foreach ($scan as $f) 
+    {
+$pattern = '/^[a-z0-9_-]{1,40}$/'; // folders
+$check = preg_match($pattern,$f);
+if ($check)  
+{
+ echo "<a href='$filename?folder=$f'>".$f."</a>";
+        echo"<br>";
+}
+    }// foreach
+echo"</div>";  
+
+
+
+
+// ------------- php ----------------------------------
+ foreach ($scan as $f) 
+ {
+$check = preg_match('/([a-z]+[0-9]*)\.php$/', $f, $match);
+ if ($check)  {   
+     //echo $f;
+      $masir=$my_dir."/".$f;
+     // echo "<br>".$masir;
+echo"<br>";
+ echo "<a href='$filename?masir=$masir&dir=$my_dir&filename=$f'>".$f."</a>";
+echo"<br>";
+ }    // if check
+      } // foreach php
+ //------------------- /php ------------------------
+//--------------------jpg --------------------------
+foreach ($scan as $f) 
+     {
+$check = preg_match('/([a-z]+[0-9]*)\.jpe?g$/', $f, $match);
+ if ($check)  {   
+     echo $f;    $masir=$my_dir."/".$f;  show_image($masir);
+  }    } // foreach
+ echo"</td>";
+ echo"</tr>";
+foreach ($scan as $f) 
+     {
+$check = preg_match('/([a-z]+[0-9]*)\.png$/', $f, $match);
+ if ($check)  {   
+     echo $f;    $masir=$my_dir."/".$f;  show_image($masir);
+  }    } // foreach
+foreach ($scan as $f)
+{
+$check = preg_match('/([a-z]+[0-9]*)\.gif$/', $f, $match);
+if ($check)  {   
+     echo $f;    $masir=$my_dir."/".$f;  show_image($masir);
+}    } // foreach
+//------------------------ editor ------------------------
+  echo"<tr>";echo"<td>";
+ echo"<img src='http://saalek110.is-great.net/images/buttons/editor.jpg'  style='width:500px;height:60px;'>";
+//---------------------------------------------------------------------------
+  echo"<br>";
+if (    isset($_GET['masir'])    &&  isset($_GET['dir'])         &&  isset($_GET['filename'])      )
+{
+
+$masir=$_GET['masir'];
+$dir=$_GET['dir'];
+$my_filename=$_GET['filename'];
+
+echo "masir= ".$masir;
+echo"<br>";
+
+
+$myfile = fopen("$masir", "r") or die("Unable to open file!");
+$contents = fread($myfile, filesize($masir));//read file  
+fclose($myfile);
+?>
+<center>
+
+
+
+<form id='myform' action="<?php echo $_SERVER['PHP_SELF']; ?>"  method = 'POST'>
+
+
+
+    <textarea id="mytextarea"  form="myform" name="post_text" rows="30" cols="20">
+        <?php  echo  htmlspecialchars($contents);  ?>
+             </textarea><br><br>
+     <?php
+     echo'<input type="hidden" id="custId" name="masir"  value='.$masir.'>';
+     echo'<input type="hidden" id="custId" name="dir"  value='.$dir.'>';
+     echo'<input type="hidden" id="custId" name="filename"  value='.$my_filename.'>';
+
+     ?>
+              <input type="submit"  name='action' form='myform' value="Submit"  style=" font-size:40px; height:90px; width:150px">   </center>                                                  
+              <?php
+
+}  // see file
+echo"</td>";
+echo"</tr>";
+echo"<tr>";
+echo"<td>"
+//--------------upload###########
+   ?>  
+   <form id='myform' action="<?php echo $_SERVER['PHP_SELF']; ?>"  method = 'POST'  enctype="multipart/form-data">
+
+          
+   <center> 
+       Select image to upload:
+         <input type="file" name="fileToUpload" id="fileToUpload" style=" font-size:16px; height:60px; width:120px">
+         <?php
+             echo'<input type="hidden" id="custId" name="masir"  value='.$my_dir.'>';
+?>
+      <input type="submit" value="Upload" name="action_upload" style=" font-size:16px; height:50px; width:80px">
+      </form>
+<?php
+//-------------------############
+
+echo"</td>";  echo"</tr>";
+
+echo"<tr>";  echo"<td>";
+echo"<table border=1><tr>";
+echo"<td>";
+
+echo"rename";
+ echo "<a href='http://saalek110.is-great.net/forum/index.php'><img src='http://saalek110.is-great.net/images/griffin.jpg' alt='griffin' width='70' height='auto'></a>";
+ echo"delete";
+echo"</td>";
+echo"<td>";
+if (    isset($_GET['masir'])    &&  isset($_GET['dir'])         &&  isset($_GET['filename'])      )
+{
+$masir=$_GET['masir'];
+$my_filename=$_GET['filename'];
+$dir=$_GET['dir'];
+echo $my_filename;
+
+?>
+   <form id='myform' action="<?php echo $_SERVER['PHP_SELF']; ?>"  method = 'POST'  enctype="multipart/form-data">
+
+yes <input type="text" name="yes_or_no_2"  style=" font-size:16px; height:20px; width:50px;" >
+
+<?php
+             echo'<input type="hidden" id="custId" name="masir"  value='.$masir.'>';
+
+             echo'<input type="hidden" id="custId" name="dir"  value='.$dir.'>';
+
+             echo'<input type="hidden" id="custId" name="filename"  value='.$my_filename.'>';
+?>
+
+      <input type="submit" value="Delete" name="action_delete" style=" font-size:16px; height:60px; width:100px">
+<?php
+}     // delete
+echo"</td>";
+echo"<td>";
+if (    isset($_GET['masir'])    &&  isset($_GET['dir'])         &&  isset($_GET['filename'])      )
+{
+$masir=$_GET['masir'];
+$my_filename=$_GET['filename'];
+$dir=$_GET['dir'];
+echo "__".$my_filename."__";
+
+?>
+   <form id='myform' action="<?php echo $_SERVER['PHP_SELF']; ?>"  method = 'POST'  enctype="multipart/form-data">
+
+
+new_name <input type="text" name="new_file_name"  style=" font-size:16px; height:40px; width:150px;" >
+
+yes <input type="text" name="yes_or_no_1"  style=" font-size:16px; height:20px; width:50px;" >
+
+
+<?php
+             echo'<input type="hidden" id="custId" name="filename"  value='.$my_filename.'>';
+
+             echo'<input type="hidden" id="custId" name="masir"  value='.$masir.'>';
+             
+             echo'<input type="hidden" id="custId" name="dir"  value='.$dir.'>';
+     ?>        
+      <input type="submit" value="rename" name="action_rename" style=" font-size:16px; height:60px; width:100px">
+<?php
+}  // rename
+echo"</td>";
+echo"<td>";
+echo"<p style='color:red'>♤♧</p>";
+echo"<br>";
+echo"<p style='color:red'>♡◇</p>";
+echo"</td>";
+echo"</tr>";echo"</table>";
+
+echo"</td>";  echo"</tr>";
+echo"</table>";
+
+
+//-------------- image function --------------------
+function show_image($masir) 
+{
+         echo"<br>";  
+            $my_loci=$_SERVER['SERVER_NAME'];
+            $dir="http://".$my_loci.$masir;
+            echo $dir;
+     echo "<a href=$dir><img src=$dir alt='c1.jpg' width='190' height=auto></a>";
+    echo"<br>";
+      }   // function
+//--------- /image function --------------------------
+
+       }   // auth
+   ?>  
+        
+   
+      <br><br><br><br><br><br><br>
+      <br><br><br><br><br><br><br>
+     <br><br><br><br><br>
+
+      </div>
+</center>
+ 
+   
+   
+
+</div>
+</body>
+</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
