@@ -1,0 +1,22 @@
+salam
+in yek file manager baraye kar dar host ast. 
+ba php neveshteh shode.
+file asli bayad name ((iran_file_manager.php)) dashteh bashad 
+va 3 file digar dar posheh ee , be name ((iran_manager)) bayad 
+kanare file asli bashad.
+agar mikhahid file asli ra ba name digari save konid ,
+dar chand khate avale file esmash ra dorost konid.
+
+in english:
+this is a program for edit and delete in host,
+and upload php and images to host.
+main file must be in nme of ((iran_file_manager.php))
+but you cab use another name . but in 10 line of file set new name.
+there is 3 another files . must be in folder named : ((iran_manager))
+include:
+
+engine1.php
+my_css.php
+save_action.php
+
+sometimes my host of my website is slow and i use my file manager. 
